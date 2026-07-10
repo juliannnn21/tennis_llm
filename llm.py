@@ -149,9 +149,38 @@ def extract_entities(query, intent):
     else:
         return None
 
+# original query so actually answers the question asked, and intent so formats right type of response
+def format_response(query, result):
+
+
+    prompt = f"""
+    Based on the original query generate a natural conversation respons using the data below.
+    Be concise, use all provided data, and don't use any data not provided.
+    For player names ensure to you their full name
+    If the query is about tournament favourites emphasise who is the number one favourite
+
+    
+    The original query is: {query}
+    The data is: {result}
+    """
+
+    response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+    )
+
+    answer = response.choices[0].message.content
+
+    return answer
 
 
 
+
+
+
+# just for testing
 
 if __name__ == "__main__":
     q1 = "who wins in Zverev vs taylor fritz?"

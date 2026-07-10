@@ -1,10 +1,13 @@
 import pandas as pd
 MINIMUM_MATCHES = 20
+RECENT_WIN_RATE_MATCHES = 20
+ON_FORM_NUMBER = 3
 df = pd.read_csv('data/atp_tennis.csv')
 
 def get_h2h(df, p1, p2):
     head_to_head = df[((df['Player_1'] == p1) & (df['Player_2'] == p2)) | ((df['Player_1'] == p2) & (df['Player_2'] == p1))]
     counts = head_to_head['Winner'].value_counts()
+    #print(f"counts: {counts}")
     return counts
 
 def get_surface_performance(df,p,surface):
@@ -70,21 +73,26 @@ def get_player_stats(df,p):
     tournament_win_rates = tournament_win_rates[tournament_win_rates['count'] >= MINIMUM_MATCHES]
     best_tournament = tournament_win_rates["mean"].idxmax()
     best_tournament_win_rate = float(round((tournament_win_rates["mean"].max() * 100),1))
+    best_tournament_matches_played = int(tournament_win_rates.loc[best_tournament, 'count'])
 
     best_tournament_dict["best_tournament"] = best_tournament
     best_tournament_dict["best_tournament_win_rate"] = best_tournament_win_rate
+    best_tournament_dict["best_tournament_matches_plaeyed"] = best_tournament_matches_played
 
+    recent_win_rate_dict = {}
     fil = fil.sort_values('Date')
-    recent_match_fil = fil.tail(20) 
+    recent_match_fil = fil.tail(RECENT_WIN_RATE_MATCHES) 
     recent_wins = len(recent_match_fil[recent_match_fil["Winner"] == p])
     recent_win_rate = round((recent_wins/len(recent_match_fil) * 100),1)
+    recent_win_rate_dict["recent_win_rate"] = recent_win_rate
+    recent_win_rate_dict["recent_win_rate_matches"] = RECENT_WIN_RATE_MATCHES
 
     statistics = {"overall_win_rate": win_rate, "win_rate_by_surface": surface_win_rates, "higher_lower_win_rates": higher_lower_win_rates
-                  , "best_tournament_stats": best_tournament_dict, "recent_win_rate": recent_win_rate}
+                  , "best_tournament_stats": best_tournament_dict, "recent_win_rate_stats": recent_win_rate_dict}
     return statistics
 
 # on_form_number controls how MANY players to list
-def get_on_form_players(df, surface = None, on_form_number = 10):
+def get_on_form_players(df, surface = None, on_form_number = ON_FORM_NUMBER):
 
     if surface and surface != "All":
         fil = df[df["Surface"] == surface]
@@ -99,11 +107,13 @@ def get_on_form_players(df, surface = None, on_form_number = 10):
     combined_players = pd.concat([p1, p2])
     combined_players["Won"] = combined_players["Winner"] == combined_players["Player"]
     # aggregate table has player name, count (matches played in last 3 months), and mean (win rate of these matches)
-    player_forms = combined_players.groupby('Player')['Won'].agg(count="count", mean="mean")
+    player_forms = combined_players.groupby('Player')['Won'].agg(matches_played ="count", win_rate = "mean")
     # minimum 10 matches seems reasonable
-    player_forms = player_forms[player_forms["count"] >= 10]
+    player_forms = player_forms[player_forms["matches_played"] >= 10]
     # sort descending
-    player_forms = player_forms.sort_values("mean", ascending = False)
+    player_forms = player_forms.sort_values("win_rate", ascending = False)
+    player_forms["win_rate"] = player_forms["win_rate"].round(3)
+    player_forms["win_rate"] = player_forms["win_rate"] * 100
 
     return player_forms.head(on_form_number)
 
@@ -209,6 +219,9 @@ def get_favourites(df, tournament):
         scores[player] = float(player_score)
 
     scores_series = pd.Series(scores)
-    top_scores = scores_series.sort_values(ascending=False).head(10)
+    top_scores = scores_series.sort_values(ascending=False).head(5)
+    favourites = {}
+    for i, player in enumerate(top_scores.index.tolist()):
+        favourites[f"Favourite {i+1}"] = player
 
-    return top_scores
+    return favourites

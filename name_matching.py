@@ -36,7 +36,7 @@ def find_player(query, df):
 
         player_name = response.choices[0].message.content
         # hallucination prevention
-        print(f"LLM returned {player_name}")
+        #print(f"LLM returned {player_name}")
         if player_name in unique_players:
             return player_name
         else:
