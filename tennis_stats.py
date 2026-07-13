@@ -12,19 +12,33 @@ def get_h2h(df, p1, p2):
 def get_surface_performance(df,p,surface):
     if surface == "All":
         fil = df[((df['Player_1'] == p) | (df['Player_2'] == p))]
+
+        surface_performance_dict = {}
+        for surface in ["Grass", "Clay", "Hard", "Carpet"]:
+            surface_filter = fil[fil["Surface"] == surface]
+            surface_filter_wins = len(surface_filter[surface_filter["Winner"] == p])
+            if len(surface_filter) == 0:
+                surface_performance_dict[surface] = None
+            else:
+                surface_performance_dict[surface] = {
+                    "win_rate": round((surface_filter_wins/len(surface_filter) * 100),1),
+                    "matches": len(surface_filter)
+                }
+        return surface_performance_dict
+    
     else:
         fil = df[((df['Player_1'] == p) | (df['Player_2'] == p)) & (df['Surface'] == surface)]
 
-    wins = len(fil[fil['Winner'] == p])
-    matches = len(fil)
-    if matches == 0:
-        win_percentage = None
-    else:
-        win_percentage = round((wins/matches * 100),1)
-    surface_performance_dict = {}
-    surface_performance_dict["surface_win_percentage"] = win_percentage
-    surface_performance_dict["surface_matches"] = matches
-    return surface_performance_dict
+        wins = len(fil[fil['Winner'] == p])
+        matches = len(fil)
+        if matches == 0:
+            win_percentage = None
+        else:
+            win_percentage = round((wins/matches * 100),1)
+        surface_performance_dict = {}
+        surface_performance_dict["surface_win_percentage"] = win_percentage
+        surface_performance_dict["surface_matches"] = matches
+        return surface_performance_dict
 
 def get_player_stats(df,p):
     # get win rate

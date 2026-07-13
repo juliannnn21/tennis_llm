@@ -7,7 +7,8 @@ load_dotenv()
 # create API client using the key
 client = Groq(api_key = os.getenv("GROQ_API_KEY"))
 
-def classify_intent(query):
+def classify_intent(query, history = []):
+
     prompt = f"""
     Classify this query into one of the following intents and return only the intent category name:
     1) h2h, 2) surface_performance, 3) player_stats, 4) on_form_players, 5) tournament_favourites
@@ -15,14 +16,19 @@ def classify_intent(query):
 
     The query is: {query}
     """
+    messages = []
+    for message in history:
+        messages.append({"role": message["role"], "content": message["content"]})
+    
+    messages.append({"role": "user", "content": prompt})
+
 
     # user here means the user's message 
 
     response = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
-    messages=[
-        {"role": "user", "content": prompt}
-    ]
+    messages=messages
+ 
     )
 
     intent = response.choices[0].message.content
@@ -30,7 +36,12 @@ def classify_intent(query):
     return intent
 
 
-def extract_entities(query, intent):
+def extract_entities(query, intent, history = []):
+
+    messages = []
+    for message in history:
+        messages.append({"role": message["role"], "content": message["content"]})
+
     if intent == "h2h":
 
         prompt = f"""
@@ -39,18 +50,16 @@ def extract_entities(query, intent):
 
         The query is: {query}
         """
-
+        messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=messages
         )
 
         players = response.choices[0].message.content
         if players == "unknown":
             return None
-        player1, player2 = players.split(",")
+        player1, player2 = players.split(",", 1)
         players_dict = {"player_1": player1.strip(), "player_2": player2.strip()}
         return players_dict
     
@@ -64,19 +73,17 @@ def extract_entities(query, intent):
 
         The query is: {query}
         """
-
+        messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=messages
         )
 
         surface_data = response.choices[0].message.content
         if surface_data == "unknown":
             return None
         #print(surface_data)
-        player, surface = surface_data.split(",")
+        player, surface = surface_data.split(",", 1)
         surface = surface.capitalize()
         surface_dict = {"player": player.strip(), "surface": surface.strip()}
         return surface_dict
@@ -89,12 +96,10 @@ def extract_entities(query, intent):
 
         The query is: {query}
         """
-
+        messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=messages
         )
 
         player = response.choices[0].message.content
@@ -112,12 +117,10 @@ def extract_entities(query, intent):
 
         The query is: {query}
         """
-
+        messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=messages
         )
 
         surface = response.choices[0].message.content
@@ -133,12 +136,10 @@ def extract_entities(query, intent):
 
         The query is: {query}
         """
-
+        messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=messages
         )
 
         tournament_name = response.choices[0].message.content
@@ -150,26 +151,32 @@ def extract_entities(query, intent):
     else:
         return None
 
-# original query so actually answers the question asked, and intent so formats right type of response
-def format_response(query, result):
+# original query (question) so actually answers the question asked, use result (data) and chat history to make a response
+# format response should technically always have history
+def format_response(query, result, history):
 
-
+    # prompt = ORIGINAL QUERY + DATA
     prompt = f"""
     Based on the original query generate a natural conversation respons using the data below.
     Be concise, use all provided data, and don't use any data not provided.
     For player names ensure to you their full name
     If the query is about tournament favourites emphasise who is the number one favourite
 
-    
     The original query is: {query}
     The data is: {result}
     """
 
+    # make message list including previous history and new question asked
+    messages = []
+    for message in history:
+        messages.append({"role": message["role"], "content": message["content"]})
+    
+    messages.append({"role": "user", "content": prompt})
+
+    # we give LLM a chat history: old prompts without data, and latest prompt WITH data (old data is engrained into old responses)
     response = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
-    messages=[
-        {"role": "user", "content": prompt}
-    ]
+    messages=messages
     )
 
     answer = response.choices[0].message.content

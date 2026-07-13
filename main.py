@@ -3,19 +3,19 @@ from tennis_stats import get_h2h, get_surface_performance, get_player_stats, get
 from name_matching import find_player
 import pandas as pd
 
-def handle_query(df, query):
+def handle_query(df, query, history = []):
     
     print(query)
     # 1) classify intent
 
-    intent = classify_intent(query)
+    intent = classify_intent(query, history)
 
     #print(f"intent: {intent}")
     # 2) extract the entities
 
-    entities = extract_entities(query, intent)
+    entities = extract_entities(query, intent, history)
 
-    #print(f"entities: {entities}")
+    print(f"entities: {entities}")
     #3 ) if entities contain a name then resolve name
 
     if entities:
@@ -55,8 +55,8 @@ def handle_query(df, query):
         result = "Something went wrong, please try again."
         return  result
 
-    #print(f"Result: {result}")
-    answer = format_response(query, result)
+    print(f"Result: {result}")
+    answer = format_response(query, result, history)
     return answer
 
 
@@ -86,7 +86,8 @@ if __name__ == "__main__":
     q7 = "broady vs ruud"
     q8 = "liam broady clay"
     q9 = "liam broady stats"
+    q10 = "alcaraz surface"
 
-    qs= [q7, q8, q9]
+    qs= [q10]
     for q in qs:
         print(handle_query(df, q))
