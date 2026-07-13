@@ -33,7 +33,7 @@ def handle_query(df, query):
         #print(f"Resolved name: {entities}")
 
     #4 ) call right function
-
+    #print(f"intent: {intent}")
     if intent == "h2h":
         result = get_h2h(df, entities["player_1"], entities["player_2"])
     elif intent == "surface_performance":
@@ -81,7 +81,12 @@ if __name__ == "__main__":
     q4 = "who is playing well right now?"
     q5 = "who are the wimbledon favourites?"
     q6 = "what time is it?"
-    qs = [q1,q2,q3,q4,q5,q6]
-    #qs= [q5]
+    #qs = [q1,q2,q3,q4,q5,q6]
+
+    q7 = "broady vs ruud"
+    q8 = "liam broady clay"
+    q9 = "liam broady stats"
+
+    qs= [q7, q8, q9]
     for q in qs:
         print(handle_query(df, q))

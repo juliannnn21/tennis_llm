@@ -1,5 +1,4 @@
 import pandas as pd
-MINIMUM_MATCHES = 20
 RECENT_WIN_RATE_MATCHES = 20
 ON_FORM_NUMBER = 3
 df = pd.read_csv('data/atp_tennis.csv')
@@ -22,11 +21,23 @@ def get_surface_performance(df,p,surface):
         win_percentage = None
     else:
         win_percentage = round((wins/matches * 100),1)
-    return win_percentage, matches
+    surface_performance_dict = {}
+    surface_performance_dict["surface_win_percentage"] = win_percentage
+    surface_performance_dict["surface_matches"] = matches
+    return surface_performance_dict
 
 def get_player_stats(df,p):
     # get win rate
     fil = df[((df['Player_1'] == p) | (df['Player_2'] == p))]
+
+    recent_player_match = fil.sort_values('Date').iloc[-1]
+    if recent_player_match["Player_1"] == p:
+        recent_player_rank = recent_player_match["Rank_1"]
+    else:
+        recent_player_rank = recent_player_match["Rank_2"]
+   
+
+
     wins = len(fil[fil['Winner'] == p])
     if len(fil) == 0:
         win_rate = None
@@ -69,15 +80,24 @@ def get_player_stats(df,p):
     # get mean win rate per tournament
     fil = fil.copy()
     fil['won'] = fil['Winner'] == p
-    tournament_win_rates = fil.groupby('Tournament')['won'].agg(mean="mean", count="count")
-    tournament_win_rates = tournament_win_rates[tournament_win_rates['count'] >= MINIMUM_MATCHES]
-    best_tournament = tournament_win_rates["mean"].idxmax()
-    best_tournament_win_rate = float(round((tournament_win_rates["mean"].max() * 100),1))
-    best_tournament_matches_played = int(tournament_win_rates.loc[best_tournament, 'count'])
 
-    best_tournament_dict["best_tournament"] = best_tournament
-    best_tournament_dict["best_tournament_win_rate"] = best_tournament_win_rate
-    best_tournament_dict["best_tournament_matches_plaeyed"] = best_tournament_matches_played
+    # get meaning of minimum matches
+    if recent_player_rank > 50:
+        minimum_matches = 10
+    else:
+        minimum_matches = 20
+
+    tournament_win_rates = fil.groupby('Tournament')['won'].agg(mean="mean", count="count")
+    tournament_win_rates = tournament_win_rates[tournament_win_rates['count'] >= minimum_matches]
+    if len(tournament_win_rates) == 0:
+        best_tournament_dict = 0
+    else:
+        best_tournament = tournament_win_rates["mean"].idxmax()
+        best_tournament_win_rate = float(round((tournament_win_rates["mean"].max() * 100),1))
+        best_tournament_matches_played = int(tournament_win_rates.loc[best_tournament, 'count'])
+        best_tournament_dict["best_tournament"] = best_tournament
+        best_tournament_dict["best_tournament_win_rate"] = best_tournament_win_rate
+        best_tournament_dict["best_tournament_matches_played"] = best_tournament_matches_played
 
     recent_win_rate_dict = {}
     fil = fil.sort_values('Date')

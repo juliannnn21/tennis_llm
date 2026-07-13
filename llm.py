@@ -75,6 +75,7 @@ def extract_entities(query, intent):
         surface_data = response.choices[0].message.content
         if surface_data == "unknown":
             return None
+        #print(surface_data)
         player, surface = surface_data.split(",")
         surface = surface.capitalize()
         surface_dict = {"player": player.strip(), "surface": surface.strip()}
