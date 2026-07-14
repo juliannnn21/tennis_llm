@@ -1,5 +1,6 @@
 import pandas as pd
-from llm import client
+from llm_client import client
+from rapidfuzz import process
 
 def find_player(query, df):
     players_p1 = df[["Player_1"]].rename(columns={"Player_1": "Player"})
@@ -60,6 +61,12 @@ def find_player(query, df):
             return max(match_counts, key = match_counts.get)
         else:
             return matches
+        
+def match_tournament(tournament, unique_tournaments):
+    best_match, score, _ = process.extractOne(tournament, unique_tournaments)
+    if score >= 70:
+        return best_match
+    return None
 
 
 
@@ -77,8 +84,6 @@ def find_player(query, df):
 
 
 
-
-        return matches
         
 
 

@@ -1,5 +1,5 @@
 import streamlit as st
-from main import handle_query
+from main import handle_query, format_response
 import pandas as pd
 
 st.set_page_config(page_title="Tennis Statistics Assistant", page_icon="🎾")
@@ -28,8 +28,8 @@ if query:
 
     with st.chat_message("assistant"):
         with st.spinner("Generating"):
-            response = handle_query(df, query, st.session_state.messages)
-        st.write(response)
+            query, result = handle_query(df, query, st.session_state.messages)
+        response = st.write_stream(format_response(query, result, st.session_state.messages))
 
     
     st.session_state.messages.append({"role": "user", "content": query})

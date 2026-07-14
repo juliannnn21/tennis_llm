@@ -155,8 +155,15 @@ def get_favourites(df, tournament):
 
     # get tournament's surface by getting surface of most recent tournament of its kind
 
-    most_recent_tournament = df[df['Tournament'] == tournament].sort_values('Date').iloc[-1]
+    tournament_fil = df[(df["Tournament"] == tournament)]
+    if len(tournament_fil) == 0:
+        return None
+    
+    most_recent_tournament = tournament_fil.sort_values('Date').iloc[-1]
     surface = most_recent_tournament['Surface']
+
+
+
 
     # get candidates
 
@@ -185,8 +192,7 @@ def get_favourites(df, tournament):
     form_fil = candidate_fil[pd.to_datetime(candidate_fil['Date']) >= form_cutoff_date]
 
     # get tournament history of each player last 5 years
-
-    tournament_fil = df[(df["Tournament"] == tournament)]
+    
     tournament_fil_p1 = tournament_fil[["Tournament", 'Date', 'Player_1', "Winner"]].rename(columns={'Player_1': 'Player'})
     tournament_fil_p2 = tournament_fil[["Tournament", 'Date', 'Player_2', "Winner"]].rename(columns={'Player_2': 'Player'})
     tournament_fil = pd.concat([tournament_fil_p1, tournament_fil_p2])
@@ -259,3 +265,15 @@ def get_favourites(df, tournament):
         favourites[f"Favourite {i+1}"] = player
 
     return favourites
+
+def get_tournament_performance(df, p, tournament):
+    tournament_fil = df[((df['Player_1'] == p) | (df['Player_2'] == p)) & (df['Tournament'] == tournament)]
+    tournament_matches = len(tournament_fil)
+    if tournament_matches == 0:
+        return None
+    tournament_wins = len(tournament_fil[tournament_fil['Winner'] == p])
+    tournament_win_rate = round((tournament_wins/tournament_matches * 100),1)
+    tournament_performance_dict = {}
+    tournament_performance_dict["tournament_win_percentage"] = tournament_win_rate
+    tournament_performance_dict["tournament_matches"] = tournament_matches
+    return tournament_performance_dict

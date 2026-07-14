@@ -1,5 +1,5 @@
-from llm import classify_intent, extract_entities, format_response
-from tennis_stats import get_h2h, get_surface_performance, get_player_stats, get_on_form_players, get_favourites
+from llm import classify_intent, extract_entities
+from tennis_stats import get_h2h, get_surface_performance, get_player_stats, get_on_form_players, get_favourites, get_tournament_performance
 from name_matching import find_player
 import pandas as pd
 
@@ -10,12 +10,15 @@ def handle_query(df, query, history = []):
 
     intent = classify_intent(query, history)
 
-    #print(f"intent: {intent}")
+    print(f"intent: {intent}")
     # 2) extract the entities
 
-    entities = extract_entities(query, intent, history)
+    entities = extract_entities(df, query, intent)
 
     print(f"entities: {entities}")
+    if entities is None:
+        result = "I couldn't understand your query, please try rephrasing."
+        return query, result
     #3 ) if entities contain a name then resolve name
 
     if entities:
@@ -24,16 +27,16 @@ def handle_query(df, query, history = []):
                 potential_player = find_player(entities[key], df)
 
                 if isinstance(potential_player, list):
-                    return f"Multiple players found, did you mean: {', '.join(potential_player)}?"
+                    return query, f"Multiple players found, did you mean: {', '.join(potential_player)}?"
                 elif potential_player is None:
-                    return f"Could not find player: {entities[key]}, please try again"
+                    return query, f"Could not find player: {entities[key]}, please try again"
                 else:
                     entities[key] = potential_player
 
         #print(f"Resolved name: {entities}")
 
     #4 ) call right function
-    #print(f"intent: {intent}")
+    #print(df['Tournament'].unique())
     if intent == "h2h":
         result = get_h2h(df, entities["player_1"], entities["player_2"])
     elif intent == "surface_performance":
@@ -47,18 +50,16 @@ def handle_query(df, query, history = []):
     elif intent == "tournament_favourites":
         # this gets the data
         result = get_favourites(df, entities["tournament"])
+    elif intent == "tournament_performance":
+        result = get_tournament_performance(df, entities["player"], entities["tournament"])
     elif intent == "unknown":
         result =  """I can only answer questions on the following topics: 
         head to head records, a player's surface performance, player stats, on-form players and tournament favourites."""
-        return result
     else:
         result = "Something went wrong, please try again."
-        return  result
 
     print(f"Result: {result}")
-    answer = format_response(query, result, history)
-    return answer
-
+    return query, result
 
 
 
@@ -87,7 +88,9 @@ if __name__ == "__main__":
     q8 = "liam broady clay"
     q9 = "liam broady stats"
     q10 = "alcaraz surface"
-
-    qs= [q10]
+    q11 = "alcaraz wimbledon"
+    q12 = "murray roland garros"
+    q13 = "who are the roland garros favourites"
+    qs= [q13]
     for q in qs:
-        print(handle_query(df, q))
+        handle_query(df, q)

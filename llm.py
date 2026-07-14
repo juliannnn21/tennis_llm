@@ -1,17 +1,11 @@
-import os
-from groq import Groq
-from dotenv import load_dotenv
-# read .env and load the api key into environment variables
-load_dotenv()
-
-# create API client using the key
-client = Groq(api_key = os.getenv("GROQ_API_KEY"))
+from llm_client import client
+from name_matching import match_tournament
 
 def classify_intent(query, history = []):
 
     prompt = f"""
     Classify this query into one of the following intents and return only the intent category name:
-    1) h2h, 2) surface_performance, 3) player_stats, 4) on_form_players, 5) tournament_favourites
+    1) h2h, 2) surface_performance, 3) player_stats, 4) on_form_players, 5) tournament_favourites 6) tournament_performance
     Or if the query doesn't fit any intent then return only the word unknown
 
     The query is: {query}
@@ -36,24 +30,26 @@ def classify_intent(query, history = []):
     return intent
 
 
-def extract_entities(query, intent, history = []):
-
+def extract_entities(df, query, intent):
+    """
     messages = []
     for message in history:
         messages.append({"role": message["role"], "content": message["content"]})
-
+    """
     if intent == "h2h":
 
         prompt = f"""
-        From the query extract the 2 players in the head-to-head question, and return them
-        in the form player_1,player_2. If unable to do this return the word unknown
+        From the query extract the 2 players in the head-to-head question, and return ONLY them in the form: 
+        player_1,player_2 
+        Do not add any explanation.
+        If unable to do this return the word unknown
 
         The query is: {query}
         """
-        messages.append({"role": "user", "content": prompt})
+       # messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=messages
+        messages = [{"role": "user", "content": prompt}]
         )
 
         players = response.choices[0].message.content
@@ -66,17 +62,18 @@ def extract_entities(query, intent, history = []):
     elif intent == "surface_performance":
 
         prompt = f"""
-        From the query extract the player and the surface, and return them
-        in the form player,surface. 
+        From the query extract the player and the surface, and return them ONLY in the form: 
+        player,surface 
+        Do not add any explanation
         If no surface mentioned or all surfaces mentioned return: player,all
         If unable to identify player then return the word unknown
 
         The query is: {query}
         """
-        messages.append({"role": "user", "content": prompt})
+     #   messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=messages
+        messages = [{"role": "user", "content": prompt}]
         )
 
         surface_data = response.choices[0].message.content
@@ -91,15 +88,17 @@ def extract_entities(query, intent, history = []):
     elif intent == "player_stats":
 
         prompt = f"""
-        From the query extract player name and return only that.
+        From the query extract player name and return ONLY in the form:
+        player_name
+        Without adding any explanation
         If unable to identify player then return the word unknown
 
         The query is: {query}
         """
-        messages.append({"role": "user", "content": prompt})
+      #  messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=messages
+        messages = [{"role": "user", "content": prompt}]
         )
 
         player = response.choices[0].message.content
@@ -111,16 +110,18 @@ def extract_entities(query, intent, history = []):
     elif intent == "on_form_players":
 
         prompt = f"""
-        From the query extract the surface if given and return just the surface name.
+        From the query extract the surface if given and return the surface name ONLY in the form:
+        surface_name
+        Without adding any explanation
         If no surface mentioned or all surfaces mentioned return the word all
         
 
         The query is: {query}
         """
-        messages.append({"role": "user", "content": prompt})
+       # messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=messages
+        messages = [{"role": "user", "content": prompt}]
         )
 
         surface = response.choices[0].message.content
@@ -130,23 +131,71 @@ def extract_entities(query, intent, history = []):
 
     elif intent == "tournament_favourites":
 
+        unique_tournaments = df['Tournament'].unique().tolist()
+
         prompt = f"""
-        From the query extract the tournament name and return only that.
+        From the query match the tournament name EXACTLY to the closest one from this list:
+        {unique_tournaments} 
+        Return ONLY the matched tournament name in the form:
+        tournament_name
+        Without adding any explanation
         If unable to identify tournament then return the word unknown
 
         The query is: {query}
         """
-        messages.append({"role": "user", "content": prompt})
+     #   messages.append({"role": "user", "content": prompt})
         response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=messages
+        messages = [{"role": "user", "content": prompt}]
         )
 
         tournament_name = response.choices[0].message.content
-        if tournament_name == "unknown":
+
+        # fuzzy match it as a safety fallback
+
+        tournament_name_match = match_tournament(tournament_name, unique_tournaments)
+
+        if tournament_name_match is None:
             return None
-        tournament_favourites_dict = {"tournament": tournament_name.strip()}
+        tournament_favourites_dict = {"tournament": tournament_name_match}
         return tournament_favourites_dict
+
+
+    elif intent == "tournament_performance":
+
+        unique_tournaments = df['Tournament'].unique().tolist()
+
+        prompt = f"""
+        From the query extract the player and match the tournament name EXACTLY to the closest one from this list:
+        {unique_tournaments} 
+        Return them ONLY in the form:
+        player,tournament_name
+        Without adding any explanation
+        If unable to identify the player or tournament then return the word unknown
+
+        The query is: {query}
+        """
+     #   messages.append({"role": "user", "content": prompt})
+        response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages = [{"role": "user", "content": prompt}]
+        )
+
+        player_tournament_data = response.choices[0].message.content
+        if player_tournament_data == "unknown":
+            return None
+
+        player, tournament_name = player_tournament_data.split(",", 1)
+        
+        tournament_name_match = match_tournament(tournament_name, unique_tournaments)
+
+        if tournament_name_match is None:
+            return None
+
+        player_tournament_dict = {"player": player.strip(), "tournament": tournament_name_match}
+        return player_tournament_dict
+
+
 
     else:
         return None
@@ -155,12 +204,16 @@ def extract_entities(query, intent, history = []):
 # format response should technically always have history
 def format_response(query, result, history):
 
+    print(f"RECEIVED: {query}, {result}")
     # prompt = ORIGINAL QUERY + DATA
     prompt = f"""
     Based on the original query generate a natural conversation respons using the data below.
     Be concise, use all provided data, and don't use any data not provided.
     For player names ensure to you their full name
-    If the query is about tournament favourites emphasise who is the number one favourite
+    If the query is about tournament favourites emphasise who is the number one favourite.
+    If the result received is not data and instead a default message as original query was not classified,
+    ensure to mention you can only help for men's ATP tour only and the topics the default message includes.
+    If you receive the message that something went wrong, only output that message.
 
     The original query is: {query}
     The data is: {result}
@@ -176,30 +229,20 @@ def format_response(query, result, history):
     # we give LLM a chat history: old prompts without data, and latest prompt WITH data (old data is engrained into old responses)
     response = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
-    messages=messages
+    messages=messages,
+    stream = True
     )
 
-    answer = response.choices[0].message.content
+    # loop through each data chunk
+    # if it contains text extract text and send to caller
+    # delta means new data added in this chunk
+    for chunk in response:
+        if chunk.choices[0].delta.content is not None:
+            yield chunk.choices[0].delta.content
 
-    return answer
 
 
 
 
-
-
-# just for testing
-
-if __name__ == "__main__":
-    q1 = "who wins in Zverev vs taylor fritz?"
-    q2 = "how does Novak Djokovic perform on grass"
-    q3 = "nadal statistics"
-    q4 = "who is playing well right now?"
-    q5 = "who are the wimbledon favourites?"
-    q6 = "what time is it?"
-    
-    for q in [q1,q2,q3,q4,q5,q6]:
-        intent = classify_intent(q)
-        print(extract_entities(q, intent))
 
     
