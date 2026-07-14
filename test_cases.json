@@ -165,7 +165,7 @@
   },
   {
     "query": "sinner wimbledon match stats",
-    "expected_intent": "unknown",
+    "expected_intent": "tournament_performance",
     "source": "manual"
   },
   {

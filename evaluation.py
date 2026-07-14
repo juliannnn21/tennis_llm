@@ -1,4 +1,4 @@
-from main import classify_intent
+from llm import classify_intent_batch
 from llm_client import client
 import pandas as pd
 import json
@@ -86,37 +86,65 @@ def generate_test_cases_llm(intent, intent_description, n=10):
     return test_cases_llm
 
 
-
-
-
-
-
-
-
-
-
-
-def evaluate(test_cases):
+def evaluate(batch):
     correct = 0
-    total = len(test_cases)
     failures = []
-    
-    for test in test_cases:
-        predicted = classify_intent(test["query"])
-        expected = test["expected_intent"]
+    queries = []
+    intent_results = {}
+
+    for test in batch:
+        queries.append(test["query"])
+    # returns positionally-matched list e.g. ["h2h", "surface_performance",...]
+    predicted_intents = classify_intent_batch(queries)
+
+    for j, test in enumerate(batch):
+        predicted_intent = predicted_intents[j]
+        expected_intent = test["expected_intent"]
         
-        if predicted == expected:
+        if expected_intent not in intent_results:
+            intent_results[expected_intent] = {"correct": 0, "total": 0}
+
+        intent_results[expected_intent]["total"] += 1
+
+        if predicted_intent == expected_intent:
             correct += 1
+            intent_results[expected_intent]["correct"] += 1
         else:
             failures.append({
                 "query": test["query"],
-                "expected": expected,
-                "predicted": predicted
+                "expected": expected_intent,
+                "predicted": predicted_intent
             })
     
-    accuracy = round((correct / total) * 100, 1)
-    return accuracy, failures
+    return correct, failures, intent_results
 
+def run_evaluation(batch_size = 10):
+    #generate_cases(10)
+    test_cases = load_cases()
+    random.shuffle(test_cases)
+    print(f"manual_cases: {len(manual_cases)}, llm_cases: {len(test_cases)-len(manual_cases)}")
+    #print(test_cases)
+
+    total_correct = 0
+    total_failures = []
+    total_intent_results = {}
+    # batch size 10, i inclusive, i+10 exclusive
+    for i in range(0, len(test_cases), batch_size):
+        batch = test_cases[i:i+batch_size]
+        # PER BATCH
+        correct, failures, intent_results = evaluate(batch)
+        total_correct += correct
+        total_failures.extend(failures)
+
+        for intent, results in intent_results.items():
+            if intent not in total_intent_results:
+                total_intent_results[intent] = {"correct": 0, "total": 0}
+            total_intent_results[intent]["correct"] += results["correct"]
+            total_intent_results[intent]["total"] += results["total"]
+
+    accuracy = round((total_correct/len(test_cases))*100,1)
+    return accuracy, total_failures, total_intent_results
+    
 
 def generate_cases(n=10):
     intent_descriptions = {
@@ -145,12 +173,8 @@ def load_cases():
 
 
 if __name__ == "__main__":
-
-    #generate_cases(10)
-    test_cases = load_cases()
-    random.shuffle(test_cases)
-    print(f"manual_cases: {len(manual_cases)}, llm_cases: {len(test_cases)-len(manual_cases)}")
-    print(test_cases)
-
-    accuracy, failures = evaluate(test_cases)
-    print(f"accuracy: {accuracy}, failures: {failures}")
+    accuracy, total_failures, total_intent_results = run_evaluation(10)
+    print(f"accuracy: {accuracy}%")
+    #print(f"failures: {total_failures}")
+    print(total_intent_results)
+   

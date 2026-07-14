@@ -36,6 +36,66 @@ def classify_intent(query, history = []):
 
     return intent
 
+def classify_intent_batch(queries):
+
+    intent_descriptions = {
+    "h2h": "general head to head record between two players only across all tournaments",
+    "surface_performance": "how a player performs on a specific surface or all surfaces",
+    "player_stats": "overall win rate, win rates on each surface, win rate vs higher/lower ranked opponents, best tournament, recent form",
+    "on_form_players": "which players are currently in form, best performing players recently, either for all surfaces/specific one",
+    "tournament_favourites": "who is likely to win an upcoming tournament",
+    "tournament_performance": "how a specific player has performed at a specific tournament",
+    "unknown": "questions about rankings, grand slam titles, prize money, coaching, playing style, or anything not covered by the other intents"
+    }   
+
+    numbered_queries = ""
+    for i, query in enumerate(queries):
+        numbered_queries += f"\n{i+1}. {query}"
+
+    prompt = f"""Classify these queries into one of the following intents using their intent descriptions, returning 
+    ONLY a numbered list intent category names in the same order e.g:
+    1. h2h
+    2. unknown
+    intent descriptions: {intent_descriptions}
+
+    Queries: {numbered_queries}
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    
+    # split output string by line to get lines
+    lines = response.choices[0].message.content.strip().split("\n")
+    intents = []
+    for line in lines:
+        if line.strip():
+            intents.append(line.split(". ", 1)[1].strip())
+    
+    return intents
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def extract_entities(df, query, intent):
     """
