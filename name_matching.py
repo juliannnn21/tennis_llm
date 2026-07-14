@@ -8,10 +8,13 @@ def find_player(query, df):
     combined_players = pd.concat([players_p1, players_p2])
     unique_players = combined_players["Player"].str.strip().unique()
     matches = []
+    
+    # if enter player in the list we've found a match
     for player in unique_players:
         if query.lower() in player.lower():
             matches.append(player)
-        
+    
+    # if we don't have a match get llm to format name correctly
     if not matches:
         # returns best match, confidence score, index in the array of the best match
 
@@ -36,18 +39,26 @@ def find_player(query, df):
         )
 
         player_name = response.choices[0].message.content
-        # hallucination prevention
-        #print(f"LLM returned {player_name}")
+
+        # final fuzzy safety net
+
         if player_name in unique_players:
             return player_name
         else:
-            return None
-        
+            best_match, score, _ = process.extractOne(player_name, unique_players)
+            if score >= 70:
+                return best_match
+            else:
+                return None
+ 
+    # beyond here we HAVE a match
+    # if we get exactly 1 match without llm just return it
     elif len(matches) == 1:
         return matches[0]
     # else we have multiple matches
     else:
         
+        # either return a single match/multiple if games played cannot break the tie
         fil_matches = df[df["Player_1"].isin(matches) | df["Player_2"].isin(matches)]
         match_counts = {}
         for player in matches:
@@ -66,7 +77,8 @@ def match_tournament(tournament, unique_tournaments):
     best_match, score, _ = process.extractOne(tournament, unique_tournaments)
     if score >= 70:
         return best_match
-    return None
+    else:
+        return None
 
 
 
