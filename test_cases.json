@@ -1,0 +1,521 @@
+[
+  {
+    "query": "who wins Nadal vs Federer",
+    "expected_intent": "h2h",
+    "source": "manual"
+  },
+  {
+    "query": "head to head of sinner and alcaraz",
+    "expected_intent": "h2h",
+    "source": "manual"
+  },
+  {
+    "query": "how does Djokovic perform on clay",
+    "expected_intent": "surface_performance",
+    "source": "manual"
+  },
+  {
+    "query": "how does Dimitrov play on grass",
+    "expected_intent": "surface_performance",
+    "source": "manual"
+  },
+  {
+    "query": "what are fritz statistics",
+    "expected_intent": "player_stats",
+    "source": "manual"
+  },
+  {
+    "query": "statistics of Auger-Alliasime",
+    "expected_intent": "player_stats",
+    "source": "manual"
+  },
+  {
+    "query": "who is on form right now?",
+    "expected_intent": "on_form_players",
+    "source": "manual"
+  },
+  {
+    "query": "who are the on-form players currently?",
+    "expected_intent": "on_form_players",
+    "source": "manual"
+  },
+  {
+    "query": "who are the tournament favourites for US open?",
+    "expected_intent": "tournament_favourites",
+    "source": "manual"
+  },
+  {
+    "query": "who are the clear favourites for Wimbledon?",
+    "expected_intent": "tournament_favourites",
+    "source": "manual"
+  },
+  {
+    "query": "how does zverev perform at the Australian Open?",
+    "expected_intent": "tournament_performance",
+    "source": "manual"
+  },
+  {
+    "query": "what is Tommy Paul's performance like at Indian Wells?",
+    "expected_intent": "tournament_performance",
+    "source": "manual"
+  },
+  {
+    "query": "what time is it",
+    "expected_intent": "unknown",
+    "source": "manual"
+  },
+  {
+    "query": "capital of France",
+    "expected_intent": "unknown",
+    "source": "manual"
+  },
+  {
+    "query": "Alexander Z vs novak",
+    "expected_intent": "h2h",
+    "source": "manual"
+  },
+  {
+    "query": "who wins tomy paul or perricard?",
+    "expected_intent": "h2h",
+    "source": "manual"
+  },
+  {
+    "query": "taylor f clay",
+    "expected_intent": "surface_performance"
+  },
+  {
+    "query": "stan warinka on hard courts",
+    "expected_intent": "surface_performance",
+    "source": "manual"
+  },
+  {
+    "query": "how good was Federer",
+    "expected_intent": "player_stats",
+    "source": "manual"
+  },
+  {
+    "query": "is Shelton a good player?",
+    "expected_intent": "player_stats",
+    "source": "manual"
+  },
+  {
+    "query": "best grass players",
+    "expected_intent": "on_form_players",
+    "source": "manual"
+  },
+  {
+    "query": "best players right now",
+    "expected_intent": "on_form_players",
+    "source": "manual"
+  },
+  {
+    "query": "who should i bet on for paris masters",
+    "expected_intent": "tournament_favourites",
+    "source": "manual"
+  },
+  {
+    "query": "who will win ATP finals?",
+    "expected_intent": "tournament_favourites",
+    "source": "manual"
+  },
+  {
+    "query": "murray roland garros",
+    "expected_intent": "tournament_performance",
+    "source": "manual"
+  },
+  {
+    "query": "Tommy Paul at Queen's club",
+    "expected_intent": "tournament_performance",
+    "source": "manual"
+  },
+  {
+    "query": "who coaches Draper?",
+    "expected_intent": "unknown",
+    "source": "manual"
+  },
+  {
+    "query": "how tall is djokovic",
+    "expected_intent": "unknown",
+    "source": "manual"
+  },
+  {
+    "query": "jannik and carlos",
+    "expected_intent": "h2h",
+    "source": "manual"
+  },
+  {
+    "query": "medvedev hard",
+    "expected_intent": "surface_performance",
+    "source": "manual"
+  },
+  {
+    "query": "Tommy P summary",
+    "expected_intent": "player_stats",
+    "source": "manual"
+  },
+  {
+    "query": "current clay court specialists",
+    "expected_intent": "on_form_players",
+    "source": "manual"
+  },
+  {
+    "query": "who should i watch at Miami",
+    "expected_intent": "tournament_favourites",
+    "source": "manual"
+  },
+  {
+    "query": "sinner wimbledon match stats",
+    "expected_intent": "unknown",
+    "source": "manual"
+  },
+  {
+    "query": "What is the head to head record between Rafael Nadal and Novak Djokovic on the ATP tour?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "How many times has Roger Federer beaten Andy Murray in their ATP matches?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "Can you compare the ATP win-loss records of Stefanos Tsitsipas and Alexander Zverev against each other?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "I want to know who has won more matches between Dominic Thiem and Daniil Medvedev.",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "What's the history between Kei Nishikori and Stan Wawrinka in terms of their ATP tour encounters?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "Has Karen Khachanov ever beaten Andrey Rublev in an ATP tournament?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "I'm looking for the all-time head-to-head statistics between Felix Auger-Aliassime and Casper Ruud on the men's tour.",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "Who leads the head to head between Matteo Berrettini and Gael Monfils in their ATP tour matches?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "Give me an update on the number of ATP matches won by Holger Rune against Jannik Sinner.",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "How do the career statistics of Pablo Carreno Busta and Diego Schwartzman compare when they play each other on the ATP tour?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "How does Rafael Nadal perform on clay courts compared to hard courts in the ATP tour?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What is the winning percentage of Novak Djokovic on grass surfaces?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Can you analyze Roger Federer's performance across different surfaces in the ATP men's tour?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "I'm curious about the struggles of players on clay, how has Stefanos Tsitsipas done on this surface?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Who has the best hard court record among active ATP players, and what's their strategy on this surface?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Do left-handed players have an advantage on grass courts, and how has Nadal utilized this to his benefit?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What are the strengths and weaknesses of Daniil Medvedev's game on different surfaces, particularly on clay?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "How has the transition from hard courts to clay affected the performance of Alexander Zverev in recent seasons?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "I've noticed that some players excel on specific surfaces, what surface does Casper Ruud prefer and why?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Are there any players who have consistently performed well across all surfaces in the ATP tour, and what makes their game so adaptable?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What is Novak Djokovic's overall win rate on the ATP tour?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "How does Rafael Nadal perform on clay courts compared to hard courts?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What is the head-to-head record of Roger Federer against players ranked higher than him?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "I'm looking for a player with a high win rate on grass, can you tell me about Felix Auger-Aliassime's performance on that surface?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Who has the best winning percentage in Grand Slam tournaments among active players?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "How has Stefanos Tsitsipas been doing lately, what's his win-loss record in the last 6 months?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "Can you compare the win rates of Alexander Zverev against top 10 players versus players outside the top 10?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "What is the most successful tournament for Andy Murray in terms of titles won and win percentage?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "I want to know more about a player who excels on hard courts, what's Holger Rune's record like on that surface and how does it compare to his overall record?",
+    "expected_intent": "surface_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Is Casper Ruud more likely to win against lower-ranked opponents or does he have a tendency to struggle against them, what are his win rates like in those matchups?",
+    "expected_intent": "player_stats",
+    "source": "llm"
+  },
+  {
+    "query": "Who are the most in-form players on the ATP tour right now?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "Can you list the top 5 players with the best recent performance on clay courts?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "I'm looking for players who have been consistently winning, what are my best bets for the upcoming hard court tournament?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "Which players have had the most success in the last 3 months on grass?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "Are there any dark horses on the ATP tour who have been quietly racking up wins lately?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "What's the current form of the top seeds going into the next Masters event?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "Who's been the most dominant player on indoor courts this season?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "I want to know which players have been on a hot streak recently, can you give me some names?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "How have the top players been performing on different surfaces over the past year, anyone standing out?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "Looking at the recent trends, which players seem to be peaking at the right time ahead of the ATP Finals?",
+    "expected_intent": "on_form_players",
+    "source": "llm"
+  },
+  {
+    "query": "Who are the top contenders for the upcoming Australian Open men's title?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "I'm betting on the French Open, can you tell me which players have the best chance of winning?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "What are the odds of a non-seeded player taking the Wimbledon trophy this year?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "Which tennis players are expected to make a deep run at the US Open?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "Who's the favourite to win the ATP Masters 1000 in Indian Wells?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "Are there any dark horses that could potentially upset the top seeds at the Monte Carlo Masters?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "I'm looking for a long shot to win the Madrid Open, who might fit the bill?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "Can you give me a list of the top 5 players most likely to win the Shanghai Masters?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "How do the tennis experts think the Rome Masters will play out in terms of potential winners?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "If I had to put my money on someone to win the Paris Masters, who would be the safest bet?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "How has Novak Djokovic performed at the Australian Open throughout his career?",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What is Rafael Nadal's win-loss record at Wimbledon?",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Can you tell me about Roger Federer's past results at the US Open?",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "I'm curious to know how Stefanos Tsitsipas has done at the French Open.",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What has been Daniil Medvedev's best finish at the Miami Open?",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "How many times has Alexander Zverev reached the final at the Madrid Open?",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "Looking for information on Andy Murray's history at the Shanghai Masters.",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "I want to know more about Kei Nishikori's performance at the Monte-Carlo Masters.",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What is the head-to-head record between Dominic Thiem and Matteo Berrettini at the Italian Open?",
+    "expected_intent": "h2h",
+    "source": "llm"
+  },
+  {
+    "query": "Can you give me an overview of Nick Kyrgios's career highlights at the Canadian Open?",
+    "expected_intent": "tournament_performance",
+    "source": "llm"
+  },
+  {
+    "query": "What is the current ATP ranking system and how often is it updated?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "Who are the top contenders for the upcoming French Open title?",
+    "expected_intent": "tournament_favourites",
+    "source": "llm"
+  },
+  {
+    "query": "Can you compare the playing styles of Rafael Nadal and Novak Djokovic?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "I've heard that some tennis players have multiple coaches, is that true?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "What are the requirements to be eligible for the ATP year-end championship?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "Do all ATP tournaments offer the same amount of prize money?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "Is there a specific reason why some players perform better on clay courts than on hard courts?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "Can you tell me about the different types of shots used by ATP players, such as the topspin forehand?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "I'm trying to understand how a player's ranking can drop even if they're still winning matches, can you explain that?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  },
+  {
+    "query": "How does a player's past performance at a particular tournament influence their seeding and draw for the next year's event?",
+    "expected_intent": "unknown",
+    "source": "llm"
+  }
+]

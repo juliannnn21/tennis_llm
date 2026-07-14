@@ -2,12 +2,19 @@ from llm_client import client
 from name_matching import match_tournament
 
 def classify_intent(query, history = []):
-
+    intent_descriptions = {
+    "h2h": "general head to head record between two players only across all tournaments",
+    "surface_performance": "how a player performs on a specific surface or all surfaces",
+    "player_stats": "overall win rate, win rates on each surface, win rate vs higher/lower ranked opponents, best tournament, recent form",
+    "on_form_players": "which players are currently in form, best performing players recently, either for all surfaces/specific one",
+    "tournament_favourites": "who is likely to win an upcoming tournament",
+    "tournament_performance": "how a specific player has performed at a specific tournament",
+    "unknown": "questions about rankings, grand slam titles, prize money, coaching, playing style, or anything not covered by the other intents"
+    }   
     prompt = f"""
-    Classify this query into one of the following intents and return only the intent category name:
-    1) h2h, 2) surface_performance, 3) player_stats, 4) on_form_players, 5) tournament_favourites 6) tournament_performance
-    Or if the query doesn't fit any intent then return only the word unknown
-
+    Classify this query into one of the following intents using their intent descriptions, returning ONLY the intent category name:
+    intent descriptions: {intent_descriptions}
+    
     The query is: {query}
     """
     messages = []
