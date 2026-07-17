@@ -86,6 +86,8 @@ def find_player(query, df, unique_players):
         elif player_name in unique_players:
             return player_name
         else:
+            if len(unique_players) == 0:
+                return None
             best_match, score, _ = process.extractOne(player_name, unique_players)
             if score >= 90:
                 return best_match
@@ -130,7 +132,8 @@ def match_tournament(tournament, unique_tournaments):
         Matched tournament name in dataset format e.g. 'French Open'
         None if no match found above 70% similarity threshold
     """
-
+    if len(unique_tournaments) == 0:
+        return None
     best_match, score, _ = process.extractOne(tournament, unique_tournaments)
     if score >= 70:
         return best_match
