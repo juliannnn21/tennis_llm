@@ -11,10 +11,25 @@ from llm import format_response
 from name_matching import get_unique_players, get_unique_tournaments
 import pandas as pd
 
+import kagglehub
+import shutil
+import os
+
+if not os.path.exists("data/atp_tennis.csv"):
+    try:
+        path = kagglehub.dataset_download("dissfya/atp-tennis-2000-2023daily-pull")
+        os.makedirs("data", exist_ok=True)
+        for file in os.listdir(path):
+            if file.endswith(".csv"):
+                shutil.copy(os.path.join(path, file), "data/atp_tennis.csv")
+    except Exception as e:
+        st.error(f"Failed to download data: {e}")
+        st.stop()
+
 try:
     df = pd.read_csv("data/atp_tennis.csv")
 except FileNotFoundError:
-    st.error("Data file not found. Please ensure data/atp_tennis.csv exists.")
+    st.error("Data file not found.")
     st.stop()
 
 # precompute at startup to avoid recalculating on every query

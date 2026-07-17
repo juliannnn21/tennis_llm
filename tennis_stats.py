@@ -10,7 +10,6 @@ tournament history and tournament favourites.
 import pandas as pd
 RECENT_WIN_RATE_MATCHES = 20
 ON_FORM_NUMBER = 3
-df = pd.read_csv('data/atp_tennis.csv')
 
 def get_h2h(df, p1, p2):
     """
