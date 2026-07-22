@@ -49,7 +49,6 @@ def handle_query(df, query, unique_players, unique_tournaments, history = [], ca
         intent = classify_intent(query, history)
 
         # 2) extract the entities
-
         if intent == "unknown":
             result = """I can only answer questions about the ATP tour on 
                         head-to-head records, player surface performance, player stats, on-form players, 
@@ -64,10 +63,10 @@ def handle_query(df, query, unique_players, unique_tournaments, history = [], ca
             last_message = None
 
         entities = extract_entities(query, intent, unique_tournaments, last_message)
-        print(f"Intent: {intent}")
-        print(f"Entities: {entities}")
         if entities is None:
-            result = "An error occurred in extracting entities"
+            result = """I can only answer questions about the ATP tour on 
+                head-to-head records, player surface performance, player stats, on-form players, 
+                tournament favourites or player tournament performance."""
             return query, result
         #3 ) if entities contain a name then resolve name
 
@@ -79,12 +78,11 @@ def handle_query(df, query, unique_players, unique_tournaments, history = [], ca
                     result = f"Multiple players found, did you mean: {', '.join(potential_player)}?"
                     return query, result
                 elif potential_player is None:
-                    result = f"Could not find player: {entities[key]}, please try again"
+                    result = f"Could not find ATP player: {entities[key]}, please try again"
                     return query, result
                 else:
                     entities[key] = potential_player
 
-        print(f"Resolved names: {entities}")
         cache_key = f"{intent}_{str(entities)}"
 
         # check if intent-entity pair is already in cache
@@ -119,7 +117,6 @@ def handle_query(df, query, unique_players, unique_tournaments, history = [], ca
                 cache[cache_key] = result
         else:
             result = cached_result
-        print(f"Result {result}")
         return query, result
     # error messages either due to rate limiting or general error message
     except Exception as e:

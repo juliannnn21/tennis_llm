@@ -214,10 +214,10 @@ def get_on_form_players(df, surface = None, on_form_number = ON_FORM_NUMBER):
         fil = df[df["Surface"] == surface]
     else:
         fil = df.copy()
-    # cutoff date for best 'recent' form is last 3 months
-    cutoff_date = pd.Timestamp.now() - pd.DateOffset(months = 3)
+    # cutoff date for best 'recent' form is last 6 months
+    cutoff_date = pd.Timestamp.now() - pd.DateOffset(months = 6)
     # convert date column to date time so can do comparison
-    fil = fil[pd.to_datetime(fil['Date']) >= cutoff_date]
+    fil = fil[pd.to_datetime(fil['Date'],dayfirst=True) >= cutoff_date]
     p1 = fil[['Date', 'Player_1', 'Winner']].rename(columns={'Player_1': 'Player'})
     p2 = fil[['Date', 'Player_2', 'Winner']].rename(columns={'Player_2': 'Player'})
     combined_players = pd.concat([p1, p2])
@@ -274,7 +274,7 @@ def get_favourites(df, tournament):
     # candidates must have played a match in past 12 months
     cutoff_date = pd.Timestamp.now() - pd.DateOffset(months = 12)
     # convert date column to date time so can do comparison
-    candidate_fil = candidate_fil[pd.to_datetime(candidate_fil['Date']) >= cutoff_date]
+    candidate_fil = candidate_fil[pd.to_datetime(candidate_fil['Date'],dayfirst=True) >= cutoff_date]
     
     # sort by date ascending
     candidate_fil = candidate_fil.sort_values('Date')
@@ -286,7 +286,7 @@ def get_favourites(df, tournament):
     # slim candidate history to mast 3 months for recent form
 
     form_cutoff_date = pd.Timestamp.now() - pd.DateOffset(months = 3)
-    form_fil = candidate_fil[pd.to_datetime(candidate_fil['Date']) >= form_cutoff_date]
+    form_fil = candidate_fil[pd.to_datetime(candidate_fil['Date'],dayfirst=True) >= form_cutoff_date]
 
     # get tournament history of each player last 5 years
     
@@ -295,7 +295,7 @@ def get_favourites(df, tournament):
     tournament_fil = pd.concat([tournament_fil_p1, tournament_fil_p2])
     tournament_fil["Won"] = tournament_fil["Winner"] == tournament_fil["Player"]
     tournament_cutoff_date = pd.Timestamp.now() - pd.DateOffset(years = 5)
-    tournament_fil = tournament_fil[pd.to_datetime(tournament_fil['Date']) >= tournament_cutoff_date]
+    tournament_fil = tournament_fil[pd.to_datetime(tournament_fil['Date'],dayfirst=True) >= tournament_cutoff_date]
 
     # get surface history of each player last 5 years
 
@@ -305,7 +305,7 @@ def get_favourites(df, tournament):
     surface_fil = pd.concat([surface_fil_p1, surface_fil_p2])
     surface_fil["Won"] = surface_fil["Winner"] == surface_fil["Player"]
     surface_cutoff_date = pd.Timestamp.now() - pd.DateOffset(years = 5)
-    surface_fil = surface_fil[pd.to_datetime(surface_fil['Date']) >= surface_cutoff_date]
+    surface_fil = surface_fil[pd.to_datetime(surface_fil['Date'],dayfirst=True) >= surface_cutoff_date]
 
     scores = {}
 
