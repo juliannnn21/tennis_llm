@@ -149,6 +149,7 @@ Data is not included in this repository — download from the link above and pla
 
 ## Future Work
 
+- **API call optimisation** — currently uses 3 LLM calls per query (intent classification, entity extraction, response formatting). These could be reduced to 2 by combining intent classification and entity extraction into a single structured output call, reducing latency and API usage to prevent rate limiting
 - **Live entry lists** — integrate ATP entry list API to filter tournament favourites to players actually entered in upcoming tournaments
 - **Match outcome predictor** — train a model on historical match data using features already computed (surface win rate, ranking, recent form, H2H record) to predict match winners
 - **Extended player statistics** — add current ranking, career titles, finals appearances, ranking points history and peak ranking to player profiles
