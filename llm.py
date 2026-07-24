@@ -294,7 +294,7 @@ def format_response(query, result, history):
         Use with st.write_stream() in Streamlit for real-time streaming output
     """
     prompt = f"""
-    Based on the original query generate a natural conversational using JUST the data below, DO NOT
+    Based on the original query generate a natural conversational response using JUST the data below, DO NOT
     question the data.
     Format names NATURALLY e.g. Sinner J. -> Jannik Sinner
 
